@@ -1,0 +1,18 @@
+#
+#   ██████╗ █████╗ ██╗     ███╗   ███╗ █████╗         ██████╗ ███████╗██╗   ██╗
+#  ██╔════╝██╔══██╗██║     ████╗ ████║██╔══██╗        ██╔══██╗██╔════╝██║   ██║
+#  ╚█████╗ ███████║██║     ██╔████╔██║██║  ██║        ██║  ██║█████╗  ╚██╗ ██╔╝
+#   ╚═══██╗██╔══██║██║     ██║╚██╔╝██║██║  ██║        ██║  ██║██╔══╝   ╚████╔╝
+#  ██████╔╝██║  ██║███████╗██║ ╚═╝ ██║╚█████╔╝        ██████╔╝███████╗  ╚██╔╝
+#  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝ ╚════╝         ╚═════╝ ╚══════╝   ╚═╝
+#
+#  Desarrollado por RudDev
+
+messages:
+  player-only: '<red>Este comando solo puede ser usado por jugadores.</red>'
+  no-permission: '<red>No tienes permiso para usar este comando.</red>'
+  disposal:
+    opened: '<green>¡Inventario de disposal abierto! Los items se eliminarán al cerrar.</green>'
+    no-permission: '<red>No tienes permiso para usar este comando.</red>'
+    player-only: '<red>Este comando solo puede ser usado por jugadores.</red>'
+    usage: '<yellow>Uso: /disposal</yellow>'
