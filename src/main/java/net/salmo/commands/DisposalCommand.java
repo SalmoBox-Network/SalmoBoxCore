@@ -24,11 +24,6 @@ public final class DisposalCommand extends Command {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String label, String @NotNull [] args) {
-        if (args.length < 1) {
-            sender.sendMessage(MessageManager.getMessage("messages.usage-command"));
-            return true;
-        }
-
         if (!(sender instanceof Player player)) {
             sender.sendMessage(MessageManager.getMessage("messages.player-only"));
             return true;
@@ -42,7 +37,7 @@ public final class DisposalCommand extends Command {
         Inventory disposalInventory = salmoPlugin.getServer().createInventory(
                 player,
                 36,
-                Component.text("Tira tu Basura").color(NamedTextColor.GRAY)
+                Component.text("Tira tu Basura").color(NamedTextColor.DARK_GRAY)
         );
 
         player.openInventory(disposalInventory);

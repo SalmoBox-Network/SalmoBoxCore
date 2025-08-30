@@ -14,12 +14,12 @@ public class SalmoBoxPlugin extends JavaPlugin {
     public MessageManager getMessageManager;
     @Getter
     private PlaceHolderAPIHook placeholderHook;
-    @Getter
-    private MessageManager messageManager;
 
     @Override
     public void onEnable() {
         instance = this;
+        MessageManager.initialize(this);
+
         long startTime = System.currentTimeMillis();
         printStartupHeader();
 

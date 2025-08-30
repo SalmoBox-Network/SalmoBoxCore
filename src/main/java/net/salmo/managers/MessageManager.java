@@ -14,7 +14,7 @@ import java.nio.file.StandardCopyOption;
 
 public class MessageManager {
 
-    private static MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static FileConfiguration messagesConfig;
     private static File messagesFile;
 
