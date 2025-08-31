@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id("com.gradleup.shadow") version "9.1.0"
 }
 
 group = 'net.salmo'
@@ -10,7 +11,6 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
-
 repositories {
     mavenCentral()
     maven {
@@ -19,15 +19,21 @@ repositories {
     }
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
-    }}
+    }
+}
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.projectlombok:lombok:1.18.38")
+    implementation("io.papermc:paperlib:1.0.8")
+    implementation("org.mongodb:mongodb-driver-sync:5.5.1")
+    implementation("org.mongodb:mongodb-driver-core:5.5.1")
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
+tasks.shadowJar {}
 
 test {
     useJUnitPlatform()

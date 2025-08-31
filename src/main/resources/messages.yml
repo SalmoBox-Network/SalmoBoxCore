@@ -9,9 +9,39 @@
 #  Desarrollado por RudDev
 
 messages:
-  player-only: '<red>Este comando solo puede ser usado por jugadores.</red>'
-  no-permission: '<red>No tienes permiso para usar este comando.</red>'
+  player-only: "<red>Este comando solo puede ser usado por jugadores.</red>"
+  no-permission: "<red>No tienes permiso para usar este comando.</red>"
+  player-not-found: "<red>Jugador no encontrado.</red>"
+  invalid-number: "<red>Por favor ingresa un número válido.</red>"
+  cooldown-message: "<red>Debes esperar %time% segundos antes de usar este comando.</red>"
+
+  fly:
+    enabled-self: "<green>Modo vuelo activado.</green>"
+    disabled-self: "<red>Modo vuelo desactivado.</red>"
+    enabled-other: "<green>Modo vuelo activado para %player%.</green>"
+    disabled-other: "<red>Modo vuelo desactivado para %player%.</red>"
+    speed-set: "<green>Velocidad de vuelo establecida a: %speed%</green>"
+    invalid-speed: "<red>La velocidad debe estar entre 0.1 y 10.</red>"
+    speed-usage: "<yellow>Uso: /fly speed <1-10></yellow>"
   disposal:
-    opened: '<green>¡Inventario de basura abierto!</green>'
-    no-permission: '<red>No tienes permiso para usar este comando.</red>'
-    player-only: '<red>Este comando solo puede ser usado por jugadores.</red>'
+    opened: "<green>¡Inventario de basura abierto!</green>"
+    no-permission: "<red>No tienes permiso para usar este comando.</red>"
+    player-only: "<red>Este comando solo puede ser usado por jugadores.</red>"
+  playtime:
+    self: "<green>Llevas jugado: <yellow>%time%</yellow></green>"
+    other: "<green>El jugador <aqua>%player%</aqua> ha jugado: <yellow>%time%</yellow></green>"
+  spawn:
+    teleported: "<green>Has sido teletransportado al spawn.</green>"
+    set: "<green>Has establecido la ubicación del spawn correctamente.</green>"
+    not-set: "<red>No se ha establecido un spawn todavía.</red>"
+  enderchest:
+    opened: "<green>¡Cofre del Ender abierto!</green>"
+  feed:
+    self: "<green>¡Barra de comida llenada!</green>"
+    other: "<green>Barra de comida llenada para %player%.</green>"
+    fed-by: "<green>%sender% llenó tu barra de comida.</green>"
+  near:
+    player: "<white>Jugador encontrado: <yellow>%player%</yellow> a <green>%distance%m</green>.</white>"
+    none: "<red>No hay jugadores cerca.</red>"
+  seen:
+    info: "<yellow>Jugador: <white>%player%\n<yellow>UUID: <white>%uuid%\n<yellow>Estado: <white>%status%\n<yellow>Tiempo: <white>%lastseen%\n<yellow>IP: <white>%ip%"

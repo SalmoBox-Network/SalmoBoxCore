@@ -4,10 +4,10 @@ main: net.salmo.SalmoBoxPlugin
 description: BoxPvP core plugin for SalmoBox server.
 api-version: '1.20'
 authors: [Rud]
+website: https://github.com/SalmoBox-Network/
 
 dependencies:
   server:
-    PlaceHolderAPI:
+    PlaceholderAPI:
       load: BEFORE
       required: false
-      join-classpath: false

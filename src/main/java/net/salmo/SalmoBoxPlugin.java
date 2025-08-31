@@ -1,9 +1,21 @@
 package net.salmo;
 
 import lombok.Getter;
-import net.salmo.commands.DisposalCommand;
+import net.salmo.commands.disposal.DisposalCommand;
+import net.salmo.commands.SalmoBoxCommand;
+import net.salmo.commands.enderchest.EnderChestCommand;
+import net.salmo.commands.feed.FeedCommand;
+import net.salmo.commands.fly.commands.FlyCommand;
+import net.salmo.commands.playtime.commands.PlaytimeCommand;
+import net.salmo.commands.seen.SeenCommand;
+import net.salmo.commands.spawn.commands.SetSpawnCommand;
+import net.salmo.commands.spawn.commands.SpawnCommand;
+import net.salmo.commands.spawn.listeners.SpawnListener;
 import net.salmo.hooks.PlaceHolderAPIHook;
+import net.salmo.listeners.PlayerDataListener;
+import net.salmo.managers.DatabaseManager;
 import net.salmo.managers.MessageManager;
+import net.salmo.near.NearCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Bukkit;
 
@@ -12,6 +24,8 @@ public class SalmoBoxPlugin extends JavaPlugin {
     @Getter
     public static SalmoBoxPlugin instance;
     public MessageManager getMessageManager;
+    @Getter
+    private DatabaseManager databaseManager;
     @Getter
     private PlaceHolderAPIHook placeholderHook;
 
@@ -23,7 +37,13 @@ public class SalmoBoxPlugin extends JavaPlugin {
         long startTime = System.currentTimeMillis();
         printStartupHeader();
 
+        saveDefaultConfig();
+        String connectionString = getConfig().getString("mongodb.uri", "mongodb://localhost:27017");
+        String databaseName = getConfig().getString("mongodb.database", "salmobox");
+        databaseManager = new DatabaseManager(this, connectionString, databaseName);
+
         setupPlaceholderAPI();
+        registerListeners();
         registerCommands();
 
         long loadTime = System.currentTimeMillis() - startTime;
@@ -32,11 +52,12 @@ public class SalmoBoxPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        MessageManager.saveMessages();
         printDisableMessage();
     }
 
     private void setupPlaceholderAPI() {
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             try {
                 if (this.placeholderHook != null) {
                     this.placeholderHook.unregister();
@@ -44,12 +65,15 @@ public class SalmoBoxPlugin extends JavaPlugin {
                 this.placeholderHook = new PlaceHolderAPIHook();
 
                 placeholderHook.register();
-                getLogger().info("PlaceholderAPI integrado correctamente.");
+                Logger.info("PlaceholderAPI detectado e integrado correctamente.");
             } catch (Exception e) {
-                getLogger().warning("Error al configurar PlaceholderAPI: " + e.getMessage());
+                Logger.warning("Error al configurar PlaceholderAPI: " + e.getMessage());
             }
+        } else {
+            Logger.info("PlaceholderAPI no detectado. El plugin funcionará sin placeholders.");
         }
     }
+
     private void printStartupHeader() {
         Bukkit.getConsoleSender().sendMessage("▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰");
         Bukkit.getConsoleSender().sendMessage(" ");
@@ -82,9 +106,27 @@ public class SalmoBoxPlugin extends JavaPlugin {
 
     private void registerCommands() {
         try {
-            Bukkit.getCommandMap().register("salmobox", new DisposalCommand());
+            Bukkit.getCommandMap().register("salmoboxcore", new SalmoBoxCommand());
+            Bukkit.getCommandMap().register("fly", new FlyCommand());
+            Bukkit.getCommandMap().register("disposal", new DisposalCommand());
+            Bukkit.getCommandMap().register("playtime", new PlaytimeCommand());
+            Bukkit.getCommandMap().register("spawn", new SpawnCommand());
+            Bukkit.getCommandMap().register("setspawn", new SetSpawnCommand());
+            Bukkit.getCommandMap().register("enderchest", new EnderChestCommand());
+            Bukkit.getCommandMap().register("feed", new FeedCommand());
+            Bukkit.getCommandMap().register("near", new NearCommand());
+            Bukkit.getCommandMap().register("seen", new SeenCommand());
         } catch (Exception e) {
-            getLogger().warning("Error al registrar comandos: " + e.getMessage());
+            Logger.warning("Error al registrar comandos: " + e.getMessage());
+        }
+    }
+
+    private void registerListeners() {
+        try {
+            getServer().getPluginManager().registerEvents(new SpawnListener(), this);
+            getServer().getPluginManager().registerEvents(new PlayerDataListener(this), this);
+        } catch (Exception e) {
+            Logger.warning("Error al registrar eventos: " + e.getMessage());
         }
     }
 }

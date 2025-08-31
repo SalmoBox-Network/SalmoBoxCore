@@ -1,4 +1,4 @@
-package net.salmo.commands;
+package net.salmo.commands.disposal;
 
 import net.salmo.managers.MessageManager;
 import org.bukkit.command.Command;
