@@ -11,6 +11,9 @@ import net.salmo.commands.seen.SeenCommand;
 import net.salmo.commands.spawn.commands.SetSpawnCommand;
 import net.salmo.commands.spawn.commands.SpawnCommand;
 import net.salmo.commands.spawn.listeners.SpawnListener;
+import net.salmo.commands.warp.DelWarpCommand;
+import net.salmo.commands.warp.SetWarpCommand;
+import net.salmo.commands.warp.WarpCommand;
 import net.salmo.hooks.PlaceHolderAPIHook;
 import net.salmo.listeners.PlayerDataListener;
 import net.salmo.managers.DatabaseManager;
@@ -127,6 +130,9 @@ public class SalmoBoxPlugin extends JavaPlugin {
             Bukkit.getCommandMap().register("feed", new FeedCommand());
             Bukkit.getCommandMap().register("near", new NearCommand());
             Bukkit.getCommandMap().register("seen", new SeenCommand());
+            Bukkit.getCommandMap().register("warp", new WarpCommand());
+            Bukkit.getCommandMap().register("setwarp", new SetWarpCommand());
+            Bukkit.getCommandMap().register("delwarp", new DelWarpCommand());
         } catch (Exception e) {
             Logger.warning("Error al registrar comandos: " + e.getMessage());
         }

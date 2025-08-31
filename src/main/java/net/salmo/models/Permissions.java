@@ -10,6 +10,7 @@ public enum Permissions {
     COMMAND_ENDERCHEST("enderchest"),
     COMMAND_FEED("feed"),
     COMMAND_NEAR("near"),
+    COMMAND_WARP("warp"),
 
     // BYPASSES
     FEED_COOLDOWN_BYPASS("feed.cooldown.bypass"),
@@ -19,6 +20,8 @@ public enum Permissions {
     COMMAND_FEED_OTHERS("admin.feed.others"),
     COMMAND_SETSPAWN("admin.setspawn"),
     COMMAND_SEEN("admin.seen"),
+    COMMAND_SETWARP("admin.setwarp"),
+    COMMAND_DELWARP("admin.delwarp"),
     COMMAND_RELOAD("admin.reload");
 
     private final String perm;

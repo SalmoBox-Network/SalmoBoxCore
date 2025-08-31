@@ -1,10 +1,20 @@
+#
+#   ██████╗ █████╗ ██╗     ███╗   ███╗ █████╗         ██████╗ ███████╗██╗   ██╗
+#  ██╔════╝██╔══██╗██║     ████╗ ████║██╔══██╗        ██╔══██╗██╔════╝██║   ██║
+#  ╚█████╗ ███████║██║     ██╔████╔██║██║  ██║        ██║  ██║█████╗  ╚██╗ ██╔╝
+#   ╚═══██╗██╔══██║██║     ██║╚██╔╝██║██║  ██║        ██║  ██║██╔══╝   ╚████╔╝
+#  ██████╔╝██║  ██║███████╗██║ ╚═╝ ██║╚█████╔╝        ██████╔╝███████╗  ╚██╔╝
+#  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝ ╚════╝         ╚═════╝ ╚══════╝   ╚═╝
+#
+#  Desarrollado por RudDev
+
 database:
-  user: "your_username"
-  password: "your_password"
-  host: "localhost"
-  database: "salmodb"
-  collection: "player_data"
-  port: 27017
+  user: salmoCoreUser
+  password: 4k3acNdRchocoEsGay
+  host: 172.18.0.1
+  database: salmobox
+  collection: player_data
+  port: 40000
   thread-pool: 4
   connect-timeout-seconds: 3
   read-timeout-seconds: 2

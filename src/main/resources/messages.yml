@@ -45,3 +45,13 @@ messages:
     none: "<red>No hay jugadores cerca.</red>"
   seen:
     info: "<yellow>Jugador: <white>%player%\n<yellow>UUID: <white>%uuid%\n<yellow>Estado: <white>%status%\n<yellow>Tiempo: <white>%lastseen%\n<yellow>IP: <white>%ip%"
+  warp:
+    setwarp-usage: "<red>Uso: /setwarp <nombre> [permiso]</red>"
+    setwarp-success: "<green>Warp '<yellow>%warp%</yellow>' creado correctamente</green>"
+    setwarp-success-permission: "<green>Warp '<yellow>%warp%</yellow>' creado con permiso: <yellow>%permission%</yellow></green>"
+    delwarp-usage: "<red>Uso: /delwarp <nombre></red>"
+    delwarp-success: "<green>Warp '<yellow>%warp%</yellow>' eliminado correctamente</green>"
+    not-found: "<red>El warp '<yellow>%warp%</yellow>' no existe</red>"
+    no-warps-available: "<red>No hay warps disponibles</red>"
+    list-available: "<green>Warps disponibles: <yellow>%warps%</yellow></green>"
+    teleport-success: "<green>Teletransportado al warp '<yellow>%warp%</yellow>'</green>"
