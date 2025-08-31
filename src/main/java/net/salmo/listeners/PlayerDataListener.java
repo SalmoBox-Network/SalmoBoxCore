@@ -2,7 +2,7 @@ package net.salmo.listeners;
 
 import net.salmo.SalmoBoxPlugin;
 import net.salmo.database.PlayerData;
-import net.salmo.managers.DatabaseManager;
+import net.salmo.database.repository.PlayerRepository;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -13,34 +13,40 @@ import java.util.Objects;
 
 public class PlayerDataListener implements Listener {
 
-    private final DatabaseManager db;
+    private final PlayerRepository playerRepository;
 
     public PlayerDataListener(SalmoBoxPlugin plugin) {
-        this.db = plugin.getDatabaseManager();
+        this.playerRepository = plugin.getDatabaseManager().getPlayerRepository();
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
         var uuid = player.getUniqueId();
+        var name = player.getName();
 
-        PlayerData data = db.getPlayer(uuid).orElse(new PlayerData(uuid));
+        PlayerData data = playerRepository.findById(uuid)
+                .orElse(new PlayerData(uuid, name));
 
+        data.setName(name);
         data.setIp(Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress());
         data.setLastSeen(Instant.now());
 
-        db.savePlayer(data);
+        playerRepository.saveAsync(data);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         var player = event.getPlayer();
         var uuid = player.getUniqueId();
+        var name = player.getName();
 
-        PlayerData data = db.getPlayer(uuid).orElse(new PlayerData(uuid));
+        PlayerData data = playerRepository.findById(uuid)
+                .orElse(new PlayerData(uuid, name));
 
+        data.setName(name);
         data.setLastSeen(Instant.now());
 
-        db.savePlayer(data);
+        playerRepository.saveAsync(data);
     }
 }

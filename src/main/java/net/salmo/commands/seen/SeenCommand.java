@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.salmo.SalmoBoxPlugin;
 import net.salmo.database.PlayerData;
-import net.salmo.managers.DatabaseManager;
+import net.salmo.database.repository.PlayerRepository;
 import net.salmo.managers.MessageManager;
 import net.salmo.models.Permissions;
 import org.bukkit.Bukkit;
@@ -16,6 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,10 +26,13 @@ import java.util.UUID;
 public class SeenCommand extends Command {
 
     private final SalmoBoxPlugin plugin;
+    private final PlayerRepository playerRepository;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public SeenCommand() {
         super("seen", "Muestra información de un jugador", "/seen <jugador>", List.of("ver", "estado"));
         this.plugin = SalmoBoxPlugin.instance;
+        this.playerRepository = plugin.getDatabaseManager().getPlayerRepository();
     }
 
     @Override
@@ -42,44 +48,98 @@ public class SeenCommand extends Command {
         }
 
         String targetName = args[0];
-        OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-        DatabaseManager db = plugin.getDatabaseManager();
-        UUID uuid = target.getUniqueId();
 
-        PlayerData data = db.getPlayer(uuid).orElse(new PlayerData(uuid));
+        PlayerData data = playerRepository.findByName(targetName).orElse(null);
 
-        boolean online = target.isOnline();
-        String lastSeen;
-        String connectionTime = "";
+        UUID uuid;
+        boolean online;
+        String actualPlayerName = targetName;
 
-        if (online) {
-            Player onlinePlayer = target.getPlayer();
-            if (onlinePlayer != null) {
-                Duration connectedDuration = Duration.between(data.getLastSeen(), Instant.now());
-                connectionTime = formatDuration(connectedDuration);
-                lastSeen = "Conectado ahora (hace " + connectionTime + ")";
-            } else {
-                lastSeen = "Conectado ahora";
-            }
+        if (data != null) {
+
+            uuid = data.getUuid();
+            actualPlayerName = data.getName();
+            online = Bukkit.getPlayer(uuid) != null;
         } else {
-            if (data.getLastSeen() != null) {
-                Duration offlineDuration = Duration.between(data.getLastSeen(), Instant.now());
-                lastSeen = formatDuration(offlineDuration) + " desconectado";
-            } else {
-                lastSeen = "Tiempo desconocido";
+
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(targetName);
+            uuid = offlinePlayer.getUniqueId();
+            online = offlinePlayer.isOnline();
+
+            if (online) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player != null) {
+                    actualPlayerName = player.getName();
+                }
             }
         }
 
-        String ip = online && target instanceof Player p ?
-                Objects.requireNonNull(p.getAddress()).getAddress().getHostAddress() :
-                data.getIp();
+        String lastSeenInfo;
+        String connectionTime = "";
+
+        if (online) {
+            Player onlinePlayer = Bukkit.getPlayer(uuid);
+            if (onlinePlayer != null) {
+                if (data != null && data.getLastSeen() != null) {
+                    Duration connectedDuration = Duration.between(data.getLastSeen(), Instant.now());
+                    connectionTime = formatDuration(connectedDuration);
+                    lastSeenInfo = "Conectado ahora (hace " + connectionTime + ")";
+                } else {
+                    lastSeenInfo = "Conectado ahora";
+                }
+            } else {
+                lastSeenInfo = "Conectado ahora";
+            }
+        } else {
+            if (data != null && data.getLastSeen() != null) {
+                Duration offlineDuration = Duration.between(data.getLastSeen(), Instant.now());
+                String timeAgo = formatDuration(offlineDuration);
+
+                LocalDateTime lastSeenDate = LocalDateTime.ofInstant(data.getLastSeen(), ZoneId.systemDefault());
+                String formattedDate = lastSeenDate.format(dateFormatter);
+
+                lastSeenInfo = timeAgo + " desconectado (" + formattedDate + ")";
+            } else {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+                if (offlinePlayer.hasPlayedBefore()) {
+                    lastSeenInfo = "Ha entrado antes pero sin registro de última conexión";
+                } else {
+                    lastSeenInfo = "Nunca ha entrado al servidor";
+                }
+            }
+        }
+
+        String ip;
+        if (online) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                ip = Objects.requireNonNull(player.getAddress()).getAddress().getHostAddress();
+            } else if (data != null && data.getIp() != null) {
+                ip = data.getIp();
+            } else {
+                ip = "Desconocida";
+            }
+        } else if (data != null && data.getIp() != null) {
+            ip = data.getIp();
+        } else {
+            ip = "Desconocida";
+        }
+
+        String rawMessage = MessageManager.getMessageRaw("messages.seen.info");
+        if (rawMessage == null) {
+            rawMessage = "<green>Información de %player%</green>\n" +
+                    "<gray>UUID: %uuid%</gray>\n" +
+                    "<gray>Estado: %status%</gray>\n" +
+                    "<gray>Última vez: %lastseen%</gray>\n" +
+                    "<gray>IP: %ip%</gray>";
+        }
 
         Component message = MiniMessage.miniMessage().deserialize(
-                MessageManager.getMessageRaw("messages.seen.info")
-                        .replace("%player%", targetName)
+                rawMessage
+                        .replace("%player%", actualPlayerName)
                         .replace("%uuid%", uuid.toString())
                         .replace("%status%", online ? "Online" : "Offline")
-                        .replace("%lastseen%", lastSeen)
+                        .replace("%lastseen%", lastSeenInfo)
                         .replace("%ip%", ip)
         );
 

@@ -1,6 +1,13 @@
-mongodb:
-  uri: "mongodb://172.18.0.1:27017"
-  database: "salmobox"
+database:
+  user: "your_username"
+  password: "your_password"
+  host: "localhost"
+  database: "salmodb"
+  collection: "player_data"
+  port: 27017
+  thread-pool: 4
+  connect-timeout-seconds: 3
+  read-timeout-seconds: 2
 
 spawn:
   world: world

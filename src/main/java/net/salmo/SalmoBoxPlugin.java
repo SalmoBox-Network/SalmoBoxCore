@@ -14,6 +14,7 @@ import net.salmo.commands.spawn.listeners.SpawnListener;
 import net.salmo.hooks.PlaceHolderAPIHook;
 import net.salmo.listeners.PlayerDataListener;
 import net.salmo.managers.DatabaseManager;
+import net.salmo.database.MongoDBInitializer;
 import net.salmo.managers.MessageManager;
 import net.salmo.near.NearCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,9 +39,16 @@ public class SalmoBoxPlugin extends JavaPlugin {
         printStartupHeader();
 
         saveDefaultConfig();
-        String connectionString = getConfig().getString("mongodb.uri", "mongodb://localhost:27017");
-        String databaseName = getConfig().getString("mongodb.database", "salmobox");
-        databaseManager = new DatabaseManager(this, connectionString, databaseName);
+
+        try {
+            this.databaseManager = MongoDBInitializer.initialize(this);
+            getServer().getPluginManager().registerEvents(new PlayerDataListener(this), this);
+            getLogger().info("Database connection established successfully");
+        } catch (Exception e) {
+            getLogger().severe("Failed to initialize database: " + e.getMessage());
+            e.printStackTrace();
+            getServer().getPluginManager().disablePlugin(this);
+        }
 
         setupPlaceholderAPI();
         registerListeners();
@@ -52,6 +60,9 @@ public class SalmoBoxPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (databaseManager != null) {
+            databaseManager.shutdown();
+        }
         MessageManager.saveMessages();
         printDisableMessage();
     }
